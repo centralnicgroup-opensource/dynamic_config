@@ -29,6 +29,8 @@ defmodule DynamicConfig.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    []
+    [
+      {:couchex, github: "norbu09/couchex"}
+    ]
   end
 end
