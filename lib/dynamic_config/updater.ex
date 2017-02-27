@@ -35,7 +35,7 @@ defmodule DynamicConfig.Updater do
 
 
   defp update_config do
-    key = Application.get_env(__MODULE__, :update, Application.get_application(__MODULE__))
+    key = Application.get_env(:dynamic_config, :update, Application.get_application(__MODULE__))
     case Source.get_config(key) do
       {:ok, config} ->
         case config["_rev"] == Application.get_env(key, "_rev") do
