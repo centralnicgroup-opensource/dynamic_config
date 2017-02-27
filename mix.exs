@@ -30,7 +30,8 @@ defmodule DynamicConfig.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:couchex, github: "norbu09/couchex"}
+      {:couchex, github: "norbu09/couchex"},
+      {:credo, ">= 0.4.11", only: [:dev, :test]}
     ]
   end
 end

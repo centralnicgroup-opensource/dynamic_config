@@ -5,6 +5,7 @@ defmodule DynamicConfig.Application do
 
   use Application
 
+  @spec start(atom, list) :: {Atom.t, Map.t}
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
