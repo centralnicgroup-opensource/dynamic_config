@@ -46,16 +46,19 @@ defmodule DynamicConfig do
     end
   end
 
+  @spec process_result(map, tuple) :: Map.t
   defp process_result(map, {:ok, line}) do
     [key] = Map.keys(line)
     Map.put(map, key, %{last_updated: DateTime.utc_now})
   end
+  @spec process_result(map, tuple) :: Map.t
   defp process_result(map, {:error, line}) do
     [key] = Map.keys(line)
     s2 = Map.put(map, key,  %{last_updated: DateTime.utc_now})
     Map.put(s2, :error, %{key => line.key})
   end
 
+  @spec process_update(map) :: {Atom.t, Map.t}
   defp process_update(line) do
     case line.backend.get_config(line.source) do
       {:ok, config} ->
