@@ -11,8 +11,6 @@ defmodule DynamicConfig.Updater do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
-  def update, do: GenServer.info(__MODULE__, :update)
-
   def init(_args) do
     Process.send_after(__MODULE__, {:update}, 1000)
     {:ok, %{}}
