@@ -4,7 +4,7 @@ defmodule DynamicConfigTest do
 
   test "config loaded" do
     Process.sleep(1_000) # we need to wait for the document to be read
-    conf = Application.get_env(:dynamic_config, "_id")
-    assert conf == "dynamic_config"
+    conf = Application.get_env(:nsearch3, "_id")
+    assert conf == "nsearch3"
   end
 end

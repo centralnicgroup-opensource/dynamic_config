@@ -3,8 +3,6 @@ defmodule DynamicConfig do
   require Logger
   use GenServer
 
-  alias DynamicConfig.CouchDB, as: Source
-
   @moduledoc ~S"""
   This is a GenServer that cals itself every n milliseconds to
   update the configuration of an application. The only real call of
@@ -27,13 +25,7 @@ defmodule DynamicConfig do
 
   @spec handle_info(tuple, map) :: {Atom.t, Map.t}
   def handle_info({:update}, state) do
-    state1 = case update_config() do
-      {:ok, _map} ->
-        Map.put(state, :last_updated, DateTime.utc_now)
-      {:error, error} ->
-        s2 = Map.put(state, :last_updated, DateTime.utc_now)
-        Map.put(s2, :error, error)
-    end
+    state1 = Map.put(state, :status, update_config())
     interval = Application.get_env(__MODULE__, :interval, 60_000)
     Process.send_after(__MODULE__, {:update}, interval)
     {:noreply, state1}
@@ -42,13 +34,35 @@ defmodule DynamicConfig do
 
   @spec update_config() :: {Atom.t, Map.t}
   defp update_config do
-    key = Application.get_env(:dynamic_config, :update, Application.get_application(__MODULE__))
-    case Source.get_config(key) do
+    case Application.get_env(:dynamic_config, :targets, []) do
+      [] ->
+        Logger.info("Could not find any dynamic config update targets - giving up")
+        {:ok, %{}}
+      targets ->
+        result = targets 
+        |> Enum.map(fn(x) -> process_update(x) end)
+        |> Enum.reduce(%{}, fn(x, acc) -> process_result(acc, x) end)
+        {:ok, result}
+    end
+  end
+
+  defp process_result(map, {:ok, line}) do
+    [key] = Map.keys(line)
+    Map.put(map, key, %{last_updated: DateTime.utc_now})
+  end
+  defp process_result(map, {:error, line}) do
+    [key] = Map.keys(line)
+    s2 = Map.put(map, key,  %{last_updated: DateTime.utc_now})
+    Map.put(s2, :error, %{key => line.key})
+  end
+
+  defp process_update(line) do
+    case line.backend.get_config(line.source) do
       {:ok, config} ->
-        needs_update?(key, config)
-      error -> 
-        Logger.error("Had errors updating the config for #{key}: #{inspect error}")
-        {:error, error}
+        needs_update?(line.target, config)
+      error ->
+        Logger.error("Had errors updating the config for #{line.target}: #{inspect error}")
+        {:error, %{line.target => error}}
     end
   end
 
@@ -57,12 +71,12 @@ defmodule DynamicConfig do
       case config["_rev"] == Application.get_env(key, "_rev") do
         true ->
           Logger.debug("no need to update, already have the latest version: #{config["_rev"]}")
-          {:ok, config}
+          {:ok, %{key => config}}
         false ->
           Logger.debug("need to update, have a new version: #{config["_rev"]}")
           config
           |> Enum.each(fn({k, v}) -> Application.put_env(key, k, v, [:persistent]) end)
-          {:ok, config}
+          {:ok, %{key => config}}
       end
   end
 

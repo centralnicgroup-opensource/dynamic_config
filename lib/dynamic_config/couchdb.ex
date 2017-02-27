@@ -11,9 +11,9 @@ defmodule DynamicConfig.CouchDB do
   test against it to see if we need to update the config.
   """
 
-  @spec get_config(atom) :: {Atom.t, Map.t}
+  @spec get_config(atom) :: {String.t, Map.t}
   def get_config(key) do
-    Logger.debug("Looking up config for #{inspect key} on #{@db}")
-    Couchex.Client.get(@db, Atom.to_string(key))
+    Logger.debug("Looking up config for #{key} on #{@db}")
+    Couchex.Client.get(@db, key)
   end
 end
