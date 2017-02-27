@@ -17,7 +17,7 @@ this to your dependencies:
 
 ```elixir
 def deps do
-  [{:dynamic_config, github: "norbu09/dynamic_config"}]
+  [{:dynamic_config, github: "iwantmyname/dynamic_config"}]
 end
 ```
 
