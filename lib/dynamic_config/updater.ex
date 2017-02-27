@@ -26,7 +26,7 @@ defmodule DynamicConfig.Updater do
         s2 = Map.put(state, :last_updated, DateTime.utc_now)
         Map.put(s2, :error, error)
     end
-    interval = Application.get_env(__MODULE__, :interval, 50_000)
+    interval = Application.get_env(__MODULE__, :interval, 60_000)
     Process.send_after(__MODULE__, {:update}, interval)
     {:noreply, state1}
   end

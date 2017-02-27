@@ -32,9 +32,10 @@ document. To configure behaviour of the application please add the
 following configuration parameter to your application:
 
 ```elixir
-:dynamic_config,
+config :dynamic_config,
   update: APPLICATION_NAME, # defaults to :dynamic_config
-  interval: 10_000,         # update interval, defaults to 50_000 (5min)
+  interval: 120_000,        # update interval, defaults to 60_000
+                            # milliseconds (1 min)
   config_db: "conf"         # defaults to "config"
 ```
 
