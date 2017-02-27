@@ -6,7 +6,7 @@ defmodule DynamicConfig do
   alias DynamicConfig.CouchDB, as: Source
 
   @moduledoc ~S"""
-  The Updater is a GenServer that cals itself every n milliseconds to
+  This is a GenServer that cals itself every n milliseconds to
   update the configuration of an application. The only real call of
   importance is the `update_config()` call that does all the heavy
   lifting, the rest is mostely boilerplate.
@@ -19,7 +19,7 @@ defmodule DynamicConfig do
 
   @spec init(list) :: {Atom.t, Map.t}
   def init(_args) do
-    Process.send_after(__MODULE__, {:update}, 1000)
+    Process.send(__MODULE__, {:update}, [])
     {:ok, %{}}
   end
 
