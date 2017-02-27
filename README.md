@@ -33,10 +33,13 @@ following configuration parameter to your application:
 
 ```elixir
 config :dynamic_config,
-  update: APPLICATION_NAME, # defaults to :dynamic_config
   interval: 120_000,        # update interval, defaults to 60_000
                             # milliseconds (1 min)
   config_db: "conf"         # defaults to "config"
+  targets: [
+    %{target: :nsearch, source: "search", backend: DynamicConfig.CouchDB},
+    %{target: :something, source: "something/else", backend: DynamicConfig.Vault}
+  ]
 ```
 
 The `update` part is the most important one as it defines the
