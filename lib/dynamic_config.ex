@@ -39,7 +39,7 @@ defmodule DynamicConfig do
         Logger.info("Could not find any dynamic config update targets - giving up")
         {:ok, %{}}
       targets ->
-        result = targets 
+        result = targets
         |> Enum.map(fn(x) -> process_update(x) end)
         |> Enum.reduce(%{}, fn(x, acc) -> process_result(acc, x) end)
         {:ok, result}
@@ -71,12 +71,12 @@ defmodule DynamicConfig do
 
   @spec needs_update?(atom, map) :: {Atom.t, Map.t}
   defp needs_update?(key, config) do
-      case config["_rev"] == Application.get_env(key, "_rev") do
+    case config.cache_id == Application.get_env(key, :cache_id) do
         true ->
-          Logger.debug("no need to update, already have the latest version: #{config["_rev"]}")
+          Logger.debug("no need to update, already have the latest version: #{config.cache_id}")
           {:ok, %{key => config}}
         false ->
-          Logger.debug("need to update, have a new version: #{config["_rev"]}")
+          Logger.debug("need to update, have a new version: #{config.cache_id}")
           config
           |> Enum.each(fn({k, v}) -> Application.put_env(key, k, v, [:persistent]) end)
           {:ok, %{key => config}}

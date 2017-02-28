@@ -7,3 +7,5 @@ config :dynamic_config,
     %{target: :nsearch3, source: "nsearch3", backend: DynamicConfig.CouchDB}
     #{target: :nsearch3.Hexonet, source: "hexonet/search", backend: DynamicConfig.Vault}
   ]
+
+

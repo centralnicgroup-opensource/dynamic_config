@@ -15,7 +15,7 @@ defmodule DynamicConfig.Mixfile do
   # Type "mix help compile.app" for more information
   def application do
     # Specify extra applications you'll use from Erlang/Elixir
-    [extra_applications: [:logger, :couchex],
+    [extra_applications: [:logger, :couchex, :vaultex],
      mod: {DynamicConfig.Application, []}]
   end
 
@@ -31,6 +31,7 @@ defmodule DynamicConfig.Mixfile do
   defp deps do
     [
       {:couchex, github: "norbu09/couchex"},
+      {:vaultex, github: "ideegeo/vaultex"},
       {:credo, ">= 0.4.11", only: [:dev, :test]}
     ]
   end
