@@ -14,6 +14,8 @@ defmodule DynamicConfig.Vault do
   def get_config(key) do
     Logger.debug("Looking up config for #{key} in vault")
     case Vaultex.Client.read(key) do
+      {:ok, []} ->
+        {:error, :no_data}
       {:ok, res} ->
         Logger.debug("Got some data: #{inspect res}")
         data = res["data"]

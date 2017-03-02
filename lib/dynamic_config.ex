@@ -55,7 +55,7 @@ defmodule DynamicConfig do
   defp process_result(map, {:error, line}) do
     [key] = Map.keys(line)
     s2 = Map.put(map, key,  %{last_updated: DateTime.utc_now})
-    Map.put(s2, :error, %{key => line.key})
+    Map.put(s2, :error, %{key => line[key]})
   end
 
   @spec process_update(map) :: {Atom.t, Map.t}
